@@ -1,0 +1,22 @@
+{
+    "name": "sigma/gitlab-issue-importer",
+    "description": "Imports issues from a yaml file.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "sigma-z",
+            "email": "sigma_z@sigma-scripts.de"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "symfony/yaml": "^4.0",
+        "symfony/console": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SigmaZ\\": "src/SigmaZ"
+        }
+    }
+}
