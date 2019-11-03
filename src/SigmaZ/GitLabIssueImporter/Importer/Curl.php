@@ -25,28 +25,31 @@ class Curl implements Importer
         $this->privateToken = $privateToken;
     }
 
-    public function importIssue(array $issueData, array $additionalFields = []): bool
+    public function importIssue(array $issueData, string $project): bool
     {
-        #$issueData = array_merge($additionalFields, $issueData);
-        return $this->postIssue($issueData);
+        $issueId = $this->postIssue($issueData);
+        if (!empty($issueData['related'])) {
+            $this->linkIssues($issueId, $issueData['related'], $project);
+        }
+        return true;
     }
 
-    private function postIssue(array $issueData): bool
+    private function postIssue(array $issueData): int
     {
-        $success = true;
         $curlHandle = curl_init();
         curl_setopt($curlHandle, CURLOPT_URL, $this->gitLabUrl);
+        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curlHandle, CURLOPT_HTTPHEADER, ['PRIVATE-TOKEN: ' . $this->privateToken]);
         curl_setopt($curlHandle, CURLOPT_POST, true);
         curl_setopt($curlHandle, CURLOPT_POSTFIELDS	, $this->convertDataToPostFields($issueData));
-        curl_exec($curlHandle);
+        $response = curl_exec($curlHandle);
         if (curl_errno($curlHandle) !== 0) {
             trigger_error(curl_error($curlHandle));
-            $success = false;
         }
         curl_close($curlHandle);
 
-        return $success;
+        $data = json_decode($response, true);
+        return $data['iid'];
     }
 
     private function convertDataToPostFields(array $issueData): string
@@ -57,6 +60,31 @@ class Curl implements Importer
             $postFields .= urlencode($key) . '=' . urlencode($valueAsString) . '&';
         }
         return $postFields;
+    }
+
+    public function linkIssues(int $issueId, array $relatedIssues, string $project): void
+    {
+        foreach ($relatedIssues as $relatedIssue) {
+            $this->linkIssue($issueId, $relatedIssue, $project);
+        }
+    }
+
+    public function linkIssue(int $issueId, string $relatedIssue, string $project): void
+    {
+        $curlHandle = curl_init();
+        curl_setopt($curlHandle, CURLOPT_URL, $this->gitLabUrl . "/$issueId/links");
+        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curlHandle, CURLOPT_HTTPHEADER, ['PRIVATE-TOKEN: ' . $this->privateToken]);
+        curl_setopt($curlHandle, CURLOPT_POST, true);
+        curl_setopt($curlHandle, CURLOPT_POSTFIELDS	, $this->convertDataToPostFields([
+            'target_project_id' => urlencode($project),
+            'target_issue_iid' => ltrim('#', $relatedIssue)
+        ]));
+        $response = curl_exec($curlHandle);
+        if (curl_errno($curlHandle) !== 0) {
+            trigger_error(curl_error($curlHandle));
+        }
+        curl_close($curlHandle);
     }
 
 }

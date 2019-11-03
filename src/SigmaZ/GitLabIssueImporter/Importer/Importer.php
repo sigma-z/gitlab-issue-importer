@@ -13,6 +13,10 @@ namespace SigmaZ\GitLabIssueImporter\Importer;
 interface Importer
 {
 
-    public function importIssue(array $issueData, array $additionalFields = []): bool;
+    public function importIssue(array $issueData, string $project): bool;
+
+    public function linkIssues(int $issueId, array $relatedIssues, string $project): void;
+
+    public function linkIssue(int $issueId, string $relatedIssue, string $project): void;
 
 }
