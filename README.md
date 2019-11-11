@@ -4,14 +4,26 @@ GitLab issue importer
 Imports issues from a yaml file.
 
 
+Config file
+---
+
+This is an example php file (./config.php)
+
+```php
+<?php
+return [
+    'gitlab-url' => 'http://localhost/api/v4/projects/',
+    'project' => 'test/project'
+];
+```
+
+
 Input file (YAML)
 ---
 
 This is an example yaml file for importing one issue
 ```yaml
-gitlab-url: "http://gitlab.example.com/"
 milestone: 'milestone #1'
-project: test/project
 issues:
   - title: 'Issue #1'
     description: 'Description of issue #1'
@@ -27,14 +39,14 @@ issues:
 Usage
 ---
 
+Import issues
+
 ```shell script
-./bin/import-gitlab-issues.php example/issues.yml PriVatEToKeN12345678 
+./bin/import-gitlab-issues.php import-issues example/issues.yml PriVatEToKeN12345678
 ```
 
+Link issues
 
-Open ToDos
----
-
-Key  'related' is not supported, yet, because yet I don't know,
-if issues can be related via the GitLab API. 
-
+```shell script
+./bin/import-gitlab-issues.php link-issues 'test/project' 123:321 PriVatEToKeN12345678
+```

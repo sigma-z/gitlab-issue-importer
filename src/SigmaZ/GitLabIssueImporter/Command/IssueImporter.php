@@ -15,14 +15,14 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Parser;
 
 class IssueImporter extends Command
 {
 
     protected static $defaultName = 'import-issues';
 
-    /** @var Yaml */
+    /** @var Parser */
     private $yamlParser;
 
     protected function configure(): void
@@ -33,7 +33,7 @@ class IssueImporter extends Command
         $this->addArgument('in', InputArgument::REQUIRED, 'input file in yaml');
         $this->addArgument('privateToken', InputArgument::REQUIRED, 'private GitLab token');
 
-        $this->yamlParser = new Yaml();
+        $this->yamlParser = new Parser();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): void
@@ -91,18 +91,25 @@ class IssueImporter extends Command
 
     private function importIssues(array $issuesData, string $privateToken): void
     {
-        $project = $issuesData['project'];
+        $config = $this->loadConfig();
+
+        $project = $config['project'];
         $additionalFields = [
             'milestone' => $issuesData['milestone'] ?? null
         ];
 
         foreach ($issuesData['issues'] as $issueData) {
             $issueProject = $issueData['project'] ?? $project;
-            $gitLabUrl = $issuesData['gitlab-url'] . urlencode($issueProject) . '/issues';
-//            $importer = new Guzzle($gitLabUrl, $privateToken);
-            $importer = new Curl($gitLabUrl, $privateToken);
+            $gitLabUrl = $config['gitlab-url'] . urlencode($issueProject) . '/issues';
+            $importer = new Guzzle($gitLabUrl, $privateToken);
+//            $importer = new Curl($gitLabUrl, $privateToken);
             $importer->importIssue(array_merge($additionalFields, $issueData), $project);
         }
+    }
+
+    private function loadConfig()
+    {
+        return require __DIR__ . '/../../../../config.php';
     }
 
 }
