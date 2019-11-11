@@ -54,14 +54,13 @@ class LinkIssue extends Command
     private function linkIssues(string $issues, string $privateToken)
     {
         $config = $this->loadConfig();
-        $project = $config['project'];
-        $gitLabUrl = $config['gitlab-url'] . urlencode($project) . '/issues';
+        $projectId = $config['projectId'];
+        $gitLabUrl = $config['gitlab-url'] . urlencode($projectId) . '/issues';
         $importer = new Guzzle($gitLabUrl, $privateToken);
         list($issueA, $issueB) = explode(':', $issues);
         $issueA = ltrim($issueA, '#');
-        $issueB = ltrim($issueB, '#');
 
-        $importer->linkIssue($issueA, $issueB, $project);
+        $importer->linkIssue($issueA, $issueB, $projectId);
     }
 
     private function loadConfig()

@@ -13,7 +13,7 @@ This is an example php file (./config.php)
 <?php
 return [
     'gitlab-url' => 'http://localhost/api/v4/projects/',
-    'project' => 'test/project'
+    'projectId' => 'test/project'
 ];
 ```
 

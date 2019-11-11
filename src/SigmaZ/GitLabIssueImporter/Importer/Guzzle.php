@@ -42,32 +42,32 @@ class Guzzle implements Importer
             $this->getPostParams($issueData)
         );
 
-        $client = new Client();
+        $client = new Client(['verify' => false]);
         $result = $client->send($request);
         $responseData = json_decode((string)$result->getBody(), true);
         return $responseData['iid'];
     }
 
-    public function linkIssues(int $issueId, array $relatedIssues, string $project): void
+    public function linkIssues(int $issueId, array $relatedIssues, string $projectId): void
     {
         foreach ($relatedIssues as $relatedIssue) {
-            $this->linkIssue($issueId, $relatedIssue, $project);
+            $this->linkIssue($issueId, $relatedIssue, $projectId);
         }
     }
 
-    public function linkIssue(int $issueId, string $relatedIssue, string $project): void
+    public function linkIssue(int $issueId, string $relatedIssue, string $projectId): void
     {
         $request = new Request(
             'POST',
             $this->gitLabUrl . "/$issueId/links",
             ['PRIVATE-TOKEN' => $this->privateToken],
             $this->getPostParams([
-                'target_project_id' => urlencode($project),
-                'target_issue_iid' => ltrim('#', $relatedIssue)
+                'target_project_id' => $projectId,
+                'target_issue_iid' => ltrim($relatedIssue, '#')
             ])
         );
 
-        $client = new Client();
+        $client = new Client(['verify' => false]);
         $result = $client->send($request);
         $responseData = json_decode((string)$result->getBody(), true);
         var_dump($responseData);

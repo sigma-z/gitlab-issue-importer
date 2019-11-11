@@ -93,17 +93,16 @@ class IssueImporter extends Command
     {
         $config = $this->loadConfig();
 
-        $project = $config['project'];
+        $projectId = $config['projectId'];
         $additionalFields = [
             'milestone' => $issuesData['milestone'] ?? null
         ];
 
         foreach ($issuesData['issues'] as $issueData) {
-            $issueProject = $issueData['project'] ?? $project;
-            $gitLabUrl = $config['gitlab-url'] . urlencode($issueProject) . '/issues';
+            $gitLabUrl = $config['gitlab-url'] . urlencode($projectId) . '/issues';
             $importer = new Guzzle($gitLabUrl, $privateToken);
 //            $importer = new Curl($gitLabUrl, $privateToken);
-            $importer->importIssue(array_merge($additionalFields, $issueData), $project);
+            $importer->importIssue(array_merge($additionalFields, $issueData), $projectId);
         }
     }
 
