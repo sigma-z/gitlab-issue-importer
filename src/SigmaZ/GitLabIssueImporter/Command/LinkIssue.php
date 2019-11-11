@@ -23,20 +23,18 @@ class LinkIssue extends Command
         $this->setDescription('Links issues.');
         $this->setHelp('This command links issues in GitLab');
 
-        $this->addArgument('project', InputArgument::REQUIRED, 'project name');
         $this->addArgument('issues', InputArgument::REQUIRED, "'issues - format: '#1:#2' or '1:2");
         $this->addArgument('privateToken', InputArgument::REQUIRED, 'private GitLab token');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        $project = $input->getArgument('project');
         $issues = $input->getArgument('issues');
         $this->validateIssuesFormat($issues);
         $privateToken = $input->getArgument('privateToken');
         $this->validatePrivateToken($privateToken);
 
-        $this->linkIssues($project, $issues, $privateToken);
+        $this->linkIssues($issues, $privateToken);
     }
 
     private function validatePrivateToken(?string $privateToken): void
@@ -53,9 +51,10 @@ class LinkIssue extends Command
         }
     }
 
-    private function linkIssues(string $project, string $issues, string $privateToken)
+    private function linkIssues(string $issues, string $privateToken)
     {
         $config = $this->loadConfig();
+        $project = $config['project'];
         $gitLabUrl = $config['gitlab-url'] . urlencode($project) . '/issues';
         $importer = new Guzzle($gitLabUrl, $privateToken);
         list($issueA, $issueB) = explode(':', $issues);

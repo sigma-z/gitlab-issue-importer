@@ -48,5 +48,5 @@ Import issues
 Link issues
 
 ```shell script
-./bin/import-gitlab-issues.php link-issues 'test/project' 123:321 PriVatEToKeN12345678
+./bin/import-gitlab-issues.php link-issues 123:321 PriVatEToKeN12345678
 ```
