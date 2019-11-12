@@ -1,5 +1,5 @@
 <?php
 return [
     'gitlab-url' => 'http://localhost/api/v4/projects/',
-    'projectId' => 'test/project'
+    'projectId' => 1
 ];

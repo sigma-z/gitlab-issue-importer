@@ -1,7 +1,11 @@
-milestone: 'milestone #1'
+milestone_id: 123
 issues:
   - title: 'Issue #1'
-    description: 'Description of issue #1'
+    description: |
+      Description of issue #1
+      * [ ] bulletin item 1
+      * [ ] bulletin item 2
+      * [ ] bulletin item 3
     labels:
       - Bug
       - Support
@@ -9,7 +13,11 @@ issues:
     related:
       - "#2"
   - title: 'Issue #2'
-    description: 'Description of issue #2'
+    description: |
+      Description of issue #2
+      * [ ] bulletin item 1
+      * [ ] bulletin item 2
+      * [ ] bulletin item 3
     labels:
       - Bug
       - Support

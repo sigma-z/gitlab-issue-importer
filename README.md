@@ -23,10 +23,14 @@ Input file (YAML)
 
 This is an example yaml file for importing one issue
 ```yaml
-milestone: 'milestone #1'
+milestone_id: 'milestone #1'
 issues:
   - title: 'Issue #1'
-    description: 'Description of issue #1'
+    description: |
+        Description of issue #1
+        * [ ] bulletin item 1
+        * [ ] bulletin item 2
+        * [ ] bulletin item 3
     labels:
       - Bug
       - Support

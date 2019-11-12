@@ -9,7 +9,6 @@
 
 namespace SigmaZ\GitLabIssueImporter\Command;
 
-use SigmaZ\GitLabIssueImporter\Importer\Curl;
 use SigmaZ\GitLabIssueImporter\Importer\Guzzle;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -93,15 +92,14 @@ class IssueImporter extends Command
     {
         $config = $this->loadConfig();
 
-        $projectId = $config['projectId'];
+        $projectId = (string)$config['projectId'];
         $additionalFields = [
-            'milestone' => $issuesData['milestone'] ?? null
+            'milestone_id' => $issuesData['milestone_id'] ?? null
         ];
 
         foreach ($issuesData['issues'] as $issueData) {
             $gitLabUrl = $config['gitlab-url'] . urlencode($projectId) . '/issues';
             $importer = new Guzzle($gitLabUrl, $privateToken);
-//            $importer = new Curl($gitLabUrl, $privateToken);
             $importer->importIssue(array_merge($additionalFields, $issueData), $projectId);
         }
     }
