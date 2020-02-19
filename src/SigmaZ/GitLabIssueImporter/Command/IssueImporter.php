@@ -77,12 +77,6 @@ class IssueImporter extends Command
 
     private function validateIssuesData(array $issuesData): void
     {
-        if (!isset($issuesData['gitlab-url'])) {
-            throw new \LogicException("Missing key 'gitlab-url' in YAML file!");
-        }
-        if (!isset($issuesData['project'])) {
-            throw new \LogicException("Missing key 'project' in YAML file!");
-        }
         if (!isset($issuesData['issues']) || !is_array($issuesData['issues'])) {
             throw new \LogicException("Expected key 'issues' is an array!");
         }
@@ -104,7 +98,7 @@ class IssueImporter extends Command
         }
     }
 
-    private function loadConfig()
+    private function loadConfig(): array
     {
         return require __DIR__ . '/../../../../config.php';
     }
